@@ -2,6 +2,7 @@ package com.mahendran_sakkarai.camera.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 
 /**
  * Created by Mahendran Sakkarai on 1/5/2017.
@@ -16,5 +17,17 @@ public class CameraUtil {
             // no camera on this device
             return false;
         }
+    }
+
+    public static Camera getCameraInstance() {
+        Camera c = null;
+
+        try {
+            c = Camera.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return c;
     }
 }

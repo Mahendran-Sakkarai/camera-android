@@ -1,13 +1,13 @@
-package com.mahendran_sakkarai.camera.widget;
+package com.mahendran_sakkarai.camera.camera.widget;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.io.IOException;
+import com.mahendran_sakkarai.camera.camera.CaptureState;
+import com.mahendran_sakkarai.camera.capture.CaptureContract;
 
 /**
  * Created by Mahendran Sakkarai on 1/5/2017.
@@ -18,13 +18,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     protected final SurfaceHolder mHolder;
     private final Camera mCamera;
+    private final CaptureContract.Presenter mPresenter;
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;
 
-    public CameraView(Context context, Camera camera) {
+    public CameraView(Context context, Camera camera, CaptureContract.Presenter presenter) {
         super(context);
         mCamera = camera;
         mHolder = getHolder();
+        mPresenter = presenter;
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
@@ -55,6 +57,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         try {
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
+            mPresenter.performAction(CaptureState.WAITING_IN_CAMERA);
         } catch (Exception e) {
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
