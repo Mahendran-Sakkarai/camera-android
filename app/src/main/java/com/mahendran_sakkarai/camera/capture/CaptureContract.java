@@ -7,6 +7,7 @@ import com.mahendran_sakkarai.camera.BasePresenter;
 import com.mahendran_sakkarai.camera.BaseView;
 import com.mahendran_sakkarai.camera.camera.CaptureState;
 import com.mahendran_sakkarai.camera.camera.CaptureType;
+import com.mahendran_sakkarai.camera.camera.widget.CameraView;
 
 import java.io.File;
 
@@ -37,6 +38,10 @@ public interface CaptureContract {
         Camera getCameraInstance();
 
         void showProfileView(String fileLocation);
+
+        boolean prepareMediaRecorder();
+
+        void releaseMediaRecorder();
     }
 
     interface View extends BaseView<Presenter> {
@@ -51,5 +56,7 @@ public interface CaptureContract {
         void showToastMessage(String mediaFile);
 
         void showProfileView(String fileLocation);
+
+        CameraView getCameraPreview();
     }
 }

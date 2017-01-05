@@ -1,6 +1,8 @@
 package com.mahendran_sakkarai.camera.capture;
 
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -12,6 +14,7 @@ import com.mahendran_sakkarai.camera.camera.PictureCallback;
 import com.mahendran_sakkarai.camera.utils.CameraUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,6 +29,7 @@ public class CapturePresenter implements CaptureContract.Presenter{
     private CaptureType mActiveType;
     private CaptureState mCurrentState;
     private Camera mCamera;
+    private MediaRecorder mMediaRecorder;
 
     public CapturePresenter(CaptureContract.View view) {
         this.mView = view;
@@ -78,24 +82,36 @@ public class CapturePresenter implements CaptureContract.Presenter{
                 mCamera.takePicture(null, null, mPictureCallback);
                 break;
             case SAVE_PICTURE:
-
+                // PictureCallback taking care about that. so nothing to do here.
                 break;
 
             // Actions related to video
             case START_VIDEO:
                 mActiveType = CaptureType.VIDEO;
+                if(prepareMediaRecorder())
+                    performAction(CaptureState.WAITING_IN_VIDEO);
                 break;
             case WAITING_IN_VIDEO:
                 mActiveType = CaptureType.VIDEO;
                 break;
             case START_VIDEO_RECORD:
                 mActiveType = CaptureType.VIDEO;
+                if (prepareMediaRecorder()) {
+                    mMediaRecorder.start();
+                    performAction(CaptureState.VIDEO_RECORD_IN_PROGRESS);
+                } else {
+                    releaseMediaRecorder();
+                }
                 break;
             case VIDEO_RECORD_IN_PROGRESS:
                 mActiveType = CaptureType.VIDEO;
                 break;
             case STOP_VIDEO_RECORD:
                 mActiveType = CaptureType.VIDEO;
+                mMediaRecorder.stop();
+                releaseMediaRecorder();
+                mCamera.lock();
+                performAction(CaptureState.START_VIDEO);
                 break;
             case SAVE_VIDEO:
 
@@ -103,6 +119,52 @@ public class CapturePresenter implements CaptureContract.Presenter{
         }
 
         mView.updateCaptureIcons();
+    }
+
+    @Override
+    public boolean prepareMediaRecorder() {
+        mMediaRecorder = new MediaRecorder();
+
+        // Step 1: Unlock and set camera to MediaRecorder
+        mCamera.unlock();
+        mMediaRecorder.setCamera(mCamera);
+
+        // Step 2: Set sources
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+
+        // Step 4: Set output file
+        mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+
+        // Step 5: Set the preview output
+        mMediaRecorder.setPreviewDisplay(mView.getCameraPreview().getHolder().getSurface());
+
+        // Step 6: Prepare configured MediaRecorder
+        try {
+            mMediaRecorder.prepare();
+        } catch (IllegalStateException e) {
+            mView.showToastMessage("IllegalStateException preparing MediaRecorder: " + e.getMessage());
+            releaseMediaRecorder();
+            return false;
+        } catch (IOException e) {
+            mView.showToastMessage("IOException preparing MediaRecorder: " + e.getMessage());
+            releaseMediaRecorder();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void releaseMediaRecorder() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder.reset();   // clear recorder configuration
+            mMediaRecorder.release(); // release the recorder object
+            mMediaRecorder = null;
+            mCamera.lock();           // lock camera for later use
+        }
     }
 
     @Override

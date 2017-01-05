@@ -188,6 +188,7 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
     @Override
     public void onPause() {
         super.onPause();
+        mPresenter.releaseMediaRecorder();
         mPresenter.releaseCamera();
     }
 
@@ -208,6 +209,11 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
         } else {
             showMessage("Camera not available now!");
         }
+    }
+
+    @Override
+    public CameraView getCameraPreview(){
+        return mCameraPreview;
     }
 
     @Override
