@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Camera</string>
+
+    <string name="enable_permission_in_setting">This app requires CAMERA, STORAGE AND RECORDER permission. Enable those permission in the settings page.</string>
+    <string name="camera_is_not_available">Camera is not available in this mobile.</string>
+    <string name="camera_error">Current device not support this camera</string>
 </resources>

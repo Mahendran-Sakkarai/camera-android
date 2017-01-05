@@ -9,10 +9,12 @@ import com.mahendran_sakkarai.camera.BaseView;
 
 public interface CaptureContract {
     interface Presenter extends BasePresenter {
+        void showErrorMessage(String message);
 
+        void openCamera();
     }
 
     interface View extends BaseView<Presenter> {
-
+        void showMessage(String message);
     }
 }
