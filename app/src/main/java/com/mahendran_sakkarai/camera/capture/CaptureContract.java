@@ -16,5 +16,7 @@ public interface CaptureContract {
 
     interface View extends BaseView<Presenter> {
         void showMessage(String message);
+
+        void openCamera();
     }
 }
