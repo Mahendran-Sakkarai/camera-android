@@ -134,8 +134,6 @@ public class CapturePresenter implements CaptureContract.Presenter{
         if (mediaType == MEDIA_TYPE_IMAGE){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "IMG_"+ timeStamp + ".jpg");
-            Log.d("Camera", mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg" + " saved successfully");
         } else if(mediaType == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "VID_"+ timeStamp + ".mp4");
@@ -163,5 +161,10 @@ public class CapturePresenter implements CaptureContract.Presenter{
     @Override
     public Camera getCameraInstance() {
         return mCamera;
+    }
+
+    @Override
+    public void showProfileView(String fileLocation) {
+        mView.showProfileView(fileLocation);
     }
 }

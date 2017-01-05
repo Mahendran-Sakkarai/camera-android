@@ -25,9 +25,11 @@ public class PictureCallback implements Camera.PictureCallback {
 
     @Override
     public void onPictureTaken(byte[] bytes, Camera camera) {
+        mPresenter.performAction(CaptureState.SAVE_PICTURE);
         File pictureFile = mPresenter.getOutputMediaFile(MEDIA_TYPE_IMAGE);
         if (pictureFile == null) {
             mPresenter.showErrorMessage("Check storage permission.");
+            mPresenter.performAction(CaptureState.IDLE);
             return;
         }
 
@@ -35,8 +37,12 @@ public class PictureCallback implements Camera.PictureCallback {
             FileOutputStream fos = new FileOutputStream(pictureFile);
             fos.write(bytes);
             fos.close();
+
+            mPresenter.showProfileView(pictureFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
+            mPresenter.showErrorMessage("Error while saving the image.");
+            mPresenter.performAction(CaptureState.IDLE);
         }
     }
 }

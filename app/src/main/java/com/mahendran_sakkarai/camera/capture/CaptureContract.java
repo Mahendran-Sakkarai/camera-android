@@ -35,6 +35,8 @@ public interface CaptureContract {
         void releaseCamera();
 
         Camera getCameraInstance();
+
+        void showProfileView(String fileLocation);
     }
 
     interface View extends BaseView<Presenter> {
@@ -47,5 +49,7 @@ public interface CaptureContract {
         void requestPermission();
 
         void showToastMessage(String mediaFile);
+
+        void showProfileView(String fileLocation);
     }
 }

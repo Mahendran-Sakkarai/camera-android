@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 
 import com.mahendran_sakkarai.camera.R;
 import com.mahendran_sakkarai.camera.camera.widget.CameraView;
+import com.mahendran_sakkarai.camera.profile.ProfileActivity;
+import com.mahendran_sakkarai.camera.utils.AppUtil;
 import com.mahendran_sakkarai.camera.utils.CameraUtil;
 import com.mahendran_sakkarai.camera.utils.PermissionUtil;
 
@@ -221,6 +224,13 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
         Toast.makeText(getActivity(), mediaFile, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void showProfileView(String fileLocation) {
+        Intent i = new Intent(getActivity(), ProfileActivity.class);
+        i.putExtra(AppUtil.PICTURE_LOCATION, fileLocation);
+        startActivity(i);
+    }
+
     private void showCamera() {
         mCameraHolder.setVisibility(View.VISIBLE);
         mMessageView.setVisibility(View.GONE);
@@ -240,10 +250,10 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
     public void updateCaptureIcons() {
         switch (mPresenter.getActiveCaptureType()) {
             case CAMERA:
-                mActionSwapper.setImageResource(R.drawable.ic_camera);
+                mActionSwapper.setImageResource(R.drawable.ic_video);
                 break;
             case VIDEO:
-                mActionSwapper.setImageResource(R.drawable.ic_video);
+                mActionSwapper.setImageResource(R.drawable.ic_camera);
                 break;
         }
 
