@@ -26,7 +26,6 @@ import com.mahendran_sakkarai.camera.R;
 import com.mahendran_sakkarai.camera.camera.widget.CameraView;
 import com.mahendran_sakkarai.camera.profile.ProfileActivity;
 import com.mahendran_sakkarai.camera.utils.AppUtil;
-import com.mahendran_sakkarai.camera.utils.CameraUtil;
 import com.mahendran_sakkarai.camera.utils.PermissionUtil;
 
 import java.io.File;
@@ -48,8 +47,6 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
     private CameraView mCameraView;
     private FrameLayout mPreviewFrame;
     private CameraView mCameraPreview;
-    private ImageView mCaptureAction;
-    private ImageView mActionSwapper;
     private Point mWindowSize;
     private RelativeLayout mCameraHolder;
     String[] mPermissions = new String[]{
@@ -58,6 +55,8 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
             Manifest.permission.RECORD_AUDIO
     };
     private AlertDialog mDialog;
+    private ImageView mVideoHandleView;
+    private ImageView mCameraHandleView;
 
     public static CaptureFragment newInstance() {
         return new CaptureFragment();
@@ -142,43 +141,22 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMessageView = (TextView) view.findViewById(R.id.message_view);
-        mCaptureAction = (ImageView) view.findViewById(R.id.action_holder);
-        mActionSwapper = (ImageView) view.findViewById(R.id.action_swapper);
+        mVideoHandleView = (ImageView) view.findViewById(R.id.action_video);
+        mCameraHandleView = (ImageView) view.findViewById(R.id.action_camera);
         mPreviewFrame = (FrameLayout) view.findViewById(R.id.frame);
         mCameraHolder = (RelativeLayout) view.findViewById(R.id.camera_container);
 
-        mActionSwapper.setOnClickListener(new View.OnClickListener() {
+        mVideoHandleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (mPresenter.getActiveCaptureType()) {
-                    case CAMERA:
-                        mPresenter.performAction(START_VIDEO);
-                        break;
-                    case VIDEO:
-                        mPresenter.performAction(START_CAMERA);
-                        break;
-                }
+                mPresenter.performAction(START_VIDEO);
             }
         });
 
-        mCaptureAction.setOnClickListener(new View.OnClickListener() {
+        mCameraHandleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (mPresenter.getActiveCaptureState()) {
-                    // TAKE PICTURE
-                    case WAITING_IN_CAMERA:
-                        mPresenter.performAction(TAKE_PICTURE);
-                        break;
-                    // RECORD VIDEO
-                    case WAITING_IN_VIDEO:
-                        mPresenter.performAction(START_VIDEO_RECORD);
-                        break;
-                    // STOP RECORDING VIDEO
-                    case VIDEO_RECORD_IN_PROGRESS:
-                    case START_VIDEO_RECORD:
-                        mPresenter.performAction(STOP_VIDEO_RECORD);
-                        break;
-                }
+                mPresenter.performAction(START_CAMERA);
             }
         });
     }
@@ -208,7 +186,6 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
             }
             mCameraPreview = new CameraView(getActivity(), mPresenter.getCameraInstance(), mPresenter);
             mPreviewFrame.addView(mCameraPreview);
-            mCameraPreview.setAspectRatio(mWindowSize.x, mWindowSize.y);
             showCamera();
         } else {
             showMessage("Camera not available now!");
@@ -268,15 +245,6 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
 
     @Override
     public void updateCaptureIcons() {
-        switch (mPresenter.getActiveCaptureType()) {
-            case CAMERA:
-                mActionSwapper.setImageResource(R.drawable.ic_video);
-                break;
-            case VIDEO:
-                mActionSwapper.setImageResource(R.drawable.ic_camera);
-                break;
-        }
-
         if (mPresenter.getActiveCaptureState() == SAVE_PICTURE) {
             mCaptureAction.setVisibility(View.GONE);
             mActionSwapper.setVisibility(View.GONE);

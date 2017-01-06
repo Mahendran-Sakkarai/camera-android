@@ -56,6 +56,7 @@ public class CapturePresenter implements CaptureContract.Presenter{
     public void openCamera() {
         performAction(CaptureState.START_CAMERA);
         mCamera = CameraUtil.getCameraInstance();
+        mCamera.setDisplayOrientation(90);
         mPictureCallback = new PictureCallback(this);
         mView.createPreview();
     }

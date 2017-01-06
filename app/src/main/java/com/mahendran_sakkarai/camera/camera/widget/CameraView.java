@@ -3,8 +3,11 @@ package com.mahendran_sakkarai.camera.camera.widget;
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 import com.mahendran_sakkarai.camera.camera.CaptureState;
 import com.mahendran_sakkarai.camera.capture.CaptureContract;
@@ -29,6 +32,32 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         mPresenter = presenter;
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        int rotation = display.getRotation();
+
+        // If vertical, we fill 2/3 the height and all the width. If horizontal,
+        // fill the entire height and 2/3 the width
+        if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
+            int screenWidth = display.getWidth();
+            int screenHeight = display.getHeight();
+            mRatioWidth = screenWidth;
+            mRatioHeight = screenHeight;
+        } else {
+            int screenWidth = display.getWidth();
+            int screenHeight = display.getHeight();
+            mRatioWidth = screenWidth;
+            mRatioHeight = screenHeight;
+        }
+        requestLayout();
+    }
+
+    @Override
+    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (changed) {
+            (this).layout(0, 0, mRatioWidth, mRatioHeight);
+        }
     }
 
     @Override
