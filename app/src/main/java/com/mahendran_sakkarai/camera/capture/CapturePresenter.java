@@ -1,12 +1,13 @@
 package com.mahendran_sakkarai.camera.capture;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mahendran_sakkarai.camera.camera.CaptureState;
 import com.mahendran_sakkarai.camera.camera.CaptureType;
@@ -14,7 +15,9 @@ import com.mahendran_sakkarai.camera.camera.PictureCallback;
 import com.mahendran_sakkarai.camera.utils.CameraUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -242,6 +245,18 @@ public class CapturePresenter implements CaptureContract.Presenter{
 
     @Override
     public void showProfileView(String fileLocation) {
+        compressImage(fileLocation);
         mView.showProfileView(fileLocation);
+    }
+
+    private void compressImage(String fileLocation) {
+        Bitmap imageBitmap = BitmapFactory.decodeFile(fileLocation);
+        try {
+            OutputStream stream = new FileOutputStream(fileLocation.substring(0, fileLocation.lastIndexOf("."))+" compressed.jpg");
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, stream);
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

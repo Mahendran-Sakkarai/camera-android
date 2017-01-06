@@ -31,6 +31,7 @@ import com.mahendran_sakkarai.camera.utils.PermissionUtil;
 
 import java.io.File;
 
+import static com.mahendran_sakkarai.camera.camera.CaptureState.SAVE_PICTURE;
 import static com.mahendran_sakkarai.camera.camera.CaptureState.START_CAMERA;
 import static com.mahendran_sakkarai.camera.camera.CaptureState.START_VIDEO;
 import static com.mahendran_sakkarai.camera.camera.CaptureState.START_VIDEO_RECORD;
@@ -276,11 +277,16 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
                 break;
         }
 
-        if (mPresenter.getActiveCaptureState() == VIDEO_RECORD_IN_PROGRESS) {
+        if (mPresenter.getActiveCaptureState() == SAVE_PICTURE) {
+            mCaptureAction.setVisibility(View.GONE);
+            mActionSwapper.setVisibility(View.GONE);
+        } else if (mPresenter.getActiveCaptureState() == VIDEO_RECORD_IN_PROGRESS) {
+            mCaptureAction.setVisibility(View.VISIBLE);
             mCaptureAction.setImageResource(R.drawable.ic_capture_stop);
             mActionSwapper.setVisibility(View.GONE);
         } else {
             mCaptureAction.setImageResource(R.drawable.ic_capture_start);
+            mCaptureAction.setVisibility(View.VISIBLE);
             mActionSwapper.setVisibility(View.VISIBLE);
         }
     }
