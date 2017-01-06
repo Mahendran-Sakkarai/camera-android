@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="profile_view_background">#211f1f</color>
+    <color name="strip_color">#FFFFFF</color>
+    <color name="brown">#6D4C41</color>
+    <color name="dark_yellow">#F9A825</color>
+    <color name="icon_background">#9E9E9E</color>
 </resources>

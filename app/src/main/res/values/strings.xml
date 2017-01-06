@@ -4,4 +4,23 @@
     <string name="enable_permission_in_setting">This app requires CAMERA, STORAGE AND RECORDER permission. Enable those permission in the settings page.</string>
     <string name="camera_is_not_available">Camera is not available in this mobile.</string>
     <string name="camera_error">Current device not support this camera</string>
+    <string name="booking_details">Booking Details</string>
+    <string name="trip_completed">Trip Completed</string>
+    <string name="test_001">Test 001</string>
+    <string name="tn">TN</string>
+    <string name="dummy0000">0000000000</string>
+    <string name="red_taxi_booking_id">Red Taxi booking ID</string>
+    <string name="booking_id">RB000111111</string>
+    <string name="timing">7:55 PM Fri Dec 8</string>
+    <string name="time_taken">1 Min Taken</string>
+    <string name="pick_up">Pick Up</string>
+    <string name="address">P J Mani Apartment, Ramakrishnapuram, Karur, Tamilnadu 639001, India</string>
+    <string name="drop_off">Drop off</string>
+    <string name="amount">Amount</string>
+    <string name="amount_val">60</string>
+    <string name="payment_gateway">Payment Gateway</string>
+    <string name="payment_val">Cash</string>
+    <string name="get_bill">GET BILL ON REGISTERED MAIL ID</string>
+    <string name="report">Report a problem</string>
+    <string name="rate">Rate Experience</string>
 </resources>
