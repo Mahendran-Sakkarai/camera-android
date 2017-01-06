@@ -58,5 +58,7 @@ public interface CaptureContract {
         void showProfileView(String fileLocation);
 
         CameraView getCameraPreview();
+
+        void openMediaPlayer(String mSavedVideoPath);
     }
 }

@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,6 +28,8 @@ import com.mahendran_sakkarai.camera.profile.ProfileActivity;
 import com.mahendran_sakkarai.camera.utils.AppUtil;
 import com.mahendran_sakkarai.camera.utils.CameraUtil;
 import com.mahendran_sakkarai.camera.utils.PermissionUtil;
+
+import java.io.File;
 
 import static com.mahendran_sakkarai.camera.camera.CaptureState.START_CAMERA;
 import static com.mahendran_sakkarai.camera.camera.CaptureState.START_VIDEO;
@@ -217,6 +220,16 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
     }
 
     @Override
+    public void openMediaPlayer(String mSavedVideoPath) {
+        Intent viewMediaIntent = new Intent();
+        viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
+        File file = new File(mSavedVideoPath);
+        viewMediaIntent.setDataAndType(Uri.fromFile(file), "video/*");
+        viewMediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(viewMediaIntent);
+    }
+
+    @Override
     public void requestPermission() {
         if (!PermissionUtil.checkPermissions(getActivity(), mPermissions)) {
             PermissionUtil.requestPermissions(getActivity(), mPermissions);
@@ -265,8 +278,10 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
 
         if (mPresenter.getActiveCaptureState() == VIDEO_RECORD_IN_PROGRESS) {
             mCaptureAction.setImageResource(R.drawable.ic_capture_stop);
+            mActionSwapper.setVisibility(View.GONE);
         } else {
             mCaptureAction.setImageResource(R.drawable.ic_capture_start);
+            mActionSwapper.setVisibility(View.VISIBLE);
         }
     }
 

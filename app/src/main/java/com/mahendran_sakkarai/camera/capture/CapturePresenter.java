@@ -30,6 +30,7 @@ public class CapturePresenter implements CaptureContract.Presenter{
     private CaptureState mCurrentState;
     private Camera mCamera;
     private MediaRecorder mMediaRecorder;
+    private File mSavedVideoPath;
 
     public CapturePresenter(CaptureContract.View view) {
         this.mView = view;
@@ -110,11 +111,16 @@ public class CapturePresenter implements CaptureContract.Presenter{
                 mActiveType = CaptureType.VIDEO;
                 mMediaRecorder.stop();
                 releaseMediaRecorder();
-                mCamera.lock();
-                performAction(CaptureState.START_VIDEO);
+                try {
+                    mCamera.lock();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                performAction(CaptureState.SAVE_VIDEO);
                 break;
             case SAVE_VIDEO:
-
+                if (mSavedVideoPath != null)
+                    mView.openMediaPlayer(mSavedVideoPath.getAbsolutePath());
                 break;
         }
 
@@ -126,7 +132,11 @@ public class CapturePresenter implements CaptureContract.Presenter{
         mMediaRecorder = new MediaRecorder();
 
         // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
+        try {
+            mCamera.unlock();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
@@ -137,7 +147,8 @@ public class CapturePresenter implements CaptureContract.Presenter{
         mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
         // Step 4: Set output file
-        mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+        mSavedVideoPath = getOutputMediaFile(MEDIA_TYPE_VIDEO);
+        mMediaRecorder.setOutputFile(mSavedVideoPath.toString());
 
         // Step 5: Set the preview output
         mMediaRecorder.setPreviewDisplay(mView.getCameraPreview().getHolder().getSurface());
@@ -163,7 +174,11 @@ public class CapturePresenter implements CaptureContract.Presenter{
             mMediaRecorder.reset();   // clear recorder configuration
             mMediaRecorder.release(); // release the recorder object
             mMediaRecorder = null;
-            mCamera.lock();           // lock camera for later use
+            try {
+                mCamera.lock();           // lock camera for later use
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
