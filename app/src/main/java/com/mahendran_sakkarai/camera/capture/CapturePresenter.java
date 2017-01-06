@@ -98,6 +98,7 @@ public class CapturePresenter implements CaptureContract.Presenter{
                 break;
             case WAITING_IN_VIDEO:
                 mActiveType = CaptureType.VIDEO;
+                performAction(CaptureState.START_VIDEO_RECORD);
                 break;
             case START_VIDEO_RECORD:
                 mActiveType = CaptureType.VIDEO;

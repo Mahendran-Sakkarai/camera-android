@@ -149,14 +149,18 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
         mVideoHandleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.performAction(START_VIDEO);
+                if (mPresenter.getActiveCaptureState() == VIDEO_RECORD_IN_PROGRESS) {
+                    mPresenter.performAction(STOP_VIDEO_RECORD);
+                } else {
+                    mPresenter.performAction(START_VIDEO);
+                }
             }
         });
 
         mCameraHandleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.performAction(START_CAMERA);
+                mPresenter.performAction(TAKE_PICTURE);
             }
         });
     }
@@ -200,7 +204,7 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
     @Override
     public void openMediaPlayer(String mSavedVideoPath) {
         Intent viewMediaIntent = new Intent();
-        viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
+        viewMediaIntent.setAction(Intent.ACTION_VIEW);
         File file = new File(mSavedVideoPath);
         viewMediaIntent.setDataAndType(Uri.fromFile(file), "video/*");
         viewMediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -245,17 +249,12 @@ public class CaptureFragment extends Fragment implements CaptureContract.View, P
 
     @Override
     public void updateCaptureIcons() {
-        if (mPresenter.getActiveCaptureState() == SAVE_PICTURE) {
-            mCaptureAction.setVisibility(View.GONE);
-            mActionSwapper.setVisibility(View.GONE);
-        } else if (mPresenter.getActiveCaptureState() == VIDEO_RECORD_IN_PROGRESS) {
-            mCaptureAction.setVisibility(View.VISIBLE);
-            mCaptureAction.setImageResource(R.drawable.ic_capture_stop);
-            mActionSwapper.setVisibility(View.GONE);
+        if (mPresenter.getActiveCaptureState() == VIDEO_RECORD_IN_PROGRESS) {
+            mVideoHandleView.setImageResource(R.drawable.ic_capture_stop);
+            mCameraHandleView.setVisibility(View.GONE);
         } else {
-            mCaptureAction.setImageResource(R.drawable.ic_capture_start);
-            mCaptureAction.setVisibility(View.VISIBLE);
-            mActionSwapper.setVisibility(View.VISIBLE);
+            mVideoHandleView.setImageResource(R.drawable.ic_video);
+            mCameraHandleView.setVisibility(View.VISIBLE);
         }
     }
 
